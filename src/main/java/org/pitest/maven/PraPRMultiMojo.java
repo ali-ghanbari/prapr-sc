@@ -46,7 +46,7 @@ import org.pitest.mutationtest.tooling.CombinedStatistics;
  */
 @Mojo(name = "praprM", defaultPhase = LifecyclePhase.VERIFY, requiresDependencyResolution = ResolutionScope.TEST, threadSafe = true)
 @Execute(phase = LifecyclePhase.TEST_COMPILE)
-public class PraPRMultiMojo extends AbstractPitMojo
+public class PraPRMultiMojo extends PraPRMojo
 {
 	/** The list of target modules that should be repaired */
 	@Parameter(property = "targetModules")
