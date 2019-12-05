@@ -37,6 +37,7 @@ import org.pitest.mutationtest.config.ReportOptions;
 import org.pitest.mutationtest.tooling.CombinedStatistics;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Ali Ghanbari (ali.ghanbari@utdallas.edu)
@@ -106,6 +107,21 @@ public class PraPRMojo extends AbstractPitMojo {
             log.info("No failing tests specified. PraPR is going to infer failing test cases.");
         } else {
             sanitizeTestCaseNames();
+        }
+
+        final List<String> outputFormats = this.getOutputFormats();
+
+        if (outputFormats.isEmpty()) {
+            log.info("No output format is specified. PraPR is going to produce LOG and COMPRESSED-XML reports.");
+            outputFormats.add("LOG");
+            outputFormats.add("COMPRESSED-XML");
+        }
+
+        final List<String> activatedMutators = this.getMutators();
+
+        if (activatedMutators.isEmpty()) {
+            log.info("No mutator is activated. PraPR is going to activate ALL the mutators.");
+            activatedMutators.add("ALL");
         }
 
         if (this.verboseReport) {
