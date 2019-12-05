@@ -83,6 +83,11 @@
             <version>2.0</version>
         </dependency>
         <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.12</version>
@@ -140,16 +145,17 @@
                                     <include>org.pitest:*</include>
                                     <include>commons-io:*</include>
                                     <include>commons-lang:*</include>
+                                    <include>commons-codec:*</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.pitest.reloc.asm</pattern>
-                                    <shadedPattern>org.mudebug.reloc.asm</shadedPattern>
+                                    <shadedPattern>org.mudebug.prapr.reloc.asm</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>org.apache.commons</pattern>
-                                    <shadedPattern>org.mudebug.reloc.commons</shadedPattern>
+                                    <shadedPattern>org.mudebug.prapr.reloc.commons</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

@@ -24,6 +24,7 @@ import org.mudebug.prapr.core.DefaultSuspChecker;
 import org.mudebug.prapr.core.DummySuspChecker;
 import org.mudebug.prapr.core.SuspChecker;
 import org.mudebug.prapr.core.WeakSuspChecker;
+import org.mudebug.prapr.core.commons.TestCaseUtil;
 import org.pitest.classinfo.ClassInfo;
 import org.pitest.classinfo.ClassName;
 import org.pitest.classpath.CodeSource;
@@ -241,7 +242,8 @@ public class PraPRCoverageGenerator implements CoverageGenerator {
             public void apply(CoverageResult coverageResult) {
                 PraPRCoverageGenerator.this.allTestsCount++;
                 if (!coverageResult.isGreenTest() && PraPRCoverageGenerator.this.shouldInferFailingTests) {
-                    PraPRCoverageGenerator.this.failingTests.add(coverageResult.getTestUnitDescription().getQualifiedName());
+                    final String sanitizedName = TestCaseUtil.sanitizeTestName(coverageResult.getTestUnitDescription().getQualifiedName());
+                    PraPRCoverageGenerator.this.failingTests.add(sanitizedName);
                 }
                 final TestInfo ti = this.createTestInfo(coverageResult.getTestUnitDescription(),
                         coverageResult.getExecutionTime(),
