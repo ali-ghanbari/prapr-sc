@@ -47,8 +47,8 @@ import org.pitest.mutationtest.engine.Mutater;
 import org.pitest.mutationtest.engine.MutationDetails;
 import org.pitest.util.ResultOutputStrategy;
 
-import static org.mudebug.prapr.entry.report.log.Commons.calculateSusp;
-import static org.mudebug.prapr.entry.report.log.Commons.sanitizeMutatorName;
+import static org.mudebug.prapr.entry.report.Commons.calculateSusp;
+import static org.mudebug.prapr.entry.report.Commons.sanitizeMutatorName;
 
 /**
  * Dirty but fast!

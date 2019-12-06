@@ -20,6 +20,7 @@ package org.mudebug.prapr.entry.report.compressedxml;
  * #L%
  */
 
+import org.mudebug.prapr.entry.mutationtest.AugmentedListenerArguments;
 import org.pitest.mutationtest.ListenerArguments;
 import org.pitest.mutationtest.MutationResultListener;
 import org.pitest.mutationtest.MutationResultListenerFactory;
@@ -33,9 +34,11 @@ import java.util.Properties;
 public class CompressedXMLFactory implements MutationResultListenerFactory {
     @Override
     public MutationResultListener getListener(Properties props, ListenerArguments args) {
+        final AugmentedListenerArguments arguments = (AugmentedListenerArguments) args;
         final CompressedDirectoryResultOutputStrategy cdros =
-                CompressedDirectoryResultOutputStrategy.forResultOutputStrategy(args.getOutputStrategy());
-        return new CompressedXMLReportListener(cdros);
+                CompressedDirectoryResultOutputStrategy.forResultOutputStrategy(arguments.getOutputStrategy());
+        return new CompressedXMLReportListener(cdros, arguments.getSuspStrategy(),
+                arguments.getFailingTests(), arguments.getAllTestsCount());
     }
 
     @Override

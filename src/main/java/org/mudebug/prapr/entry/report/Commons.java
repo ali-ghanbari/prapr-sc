@@ -1,4 +1,4 @@
-package org.mudebug.prapr.entry.report.log;
+package org.mudebug.prapr.entry.report;
 
 /*
  * #%L

@@ -27,7 +27,7 @@ import org.pitest.mutationtest.engine.MutationDetails;
 
 import java.util.Objects;
 
-import static org.mudebug.prapr.entry.report.log.Commons.sanitizeMutatorName;
+import static org.mudebug.prapr.entry.report.Commons.sanitizeMutatorName;
 
 /**
  * @author Ali Ghanbari (ali.ghanbari@utdallas.edu)

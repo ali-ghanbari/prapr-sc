@@ -23,7 +23,7 @@ package org.mudebug.prapr.entry.report.compressedxml;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.block;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.description;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.index;
-//import static org.mudebug.prapr.entry.report.compressedxml.Tag.killingTests;
+import static org.mudebug.prapr.entry.report.compressedxml.Tag.killingTest;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.coveringTests;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.lineNumber;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.methodDescription;
@@ -31,14 +31,18 @@ import static org.mudebug.prapr.entry.report.compressedxml.Tag.mutatedClass;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.mutatedMethod;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.mutation;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.mutator;
-//import static org.mudebug.prapr.entry.report.compressedxml.Tag.suspValue;
+import static org.mudebug.prapr.entry.report.compressedxml.Tag.suspValue;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.sourceFile;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.List;
 
+import org.mudebug.prapr.core.SuspStrategy;
+import org.mudebug.prapr.entry.report.Commons;
 import org.pitest.coverage.TestInfo;
+import org.pitest.functional.Option;
 import org.pitest.mutationtest.ClassMutationResults;
 import org.pitest.mutationtest.MutationResult;
 import org.pitest.mutationtest.MutationResultListener;
@@ -56,9 +60,9 @@ enum Tag {
     mutator,
     index,
     coveringTests,
-//    killingTests,
+    killingTest,
     description,
-//    suspValue,
+    suspValue,
     block;
 }
 
@@ -68,13 +72,25 @@ enum Tag {
  */
 public class CompressedXMLReportListener implements MutationResultListener {
     private final Writer out;
+    private final SuspStrategy suspStrategy;
+    private final Collection<String> failingTests;
+    private final int allTestsCount;
 
-    public CompressedXMLReportListener(final CompressedDirectoryResultOutputStrategy outputStrategy) {
-        this(outputStrategy.createWriterForFile("mutations.xml.gz"));
+    public CompressedXMLReportListener(final CompressedDirectoryResultOutputStrategy outputStrategy,
+                                       final SuspStrategy suspStrategy,
+                                       final Collection<String> failingTests,
+                                       final int allTestsCount) {
+        this(outputStrategy.createWriterForFile("mutations.xml.gz"), suspStrategy, failingTests, allTestsCount);
     }
 
-    public CompressedXMLReportListener(final Writer out) {
+    private CompressedXMLReportListener(final Writer out,
+                                       final SuspStrategy suspStrategy,
+                                       final Collection<String> failingTests,
+                                       final int allTestsCount) {
         this.out = out;
+        this.suspStrategy = suspStrategy;
+        this.failingTests = failingTests;
+        this.allTestsCount = allTestsCount;
     }
 
     private void writeResult(final ClassMutationResults metaData) {
@@ -105,9 +121,13 @@ public class CompressedXMLReportListener implements MutationResultListener {
                 + makeNode("" + details.getFirstIndex(), index)
                 + makeNode("" + details.getBlock(), block)
                 + makeNode(createCoveringTestsDesc(details.getTestsInOrder()), coveringTests)
-//                + makeNode(createAllKillingTestsDesc(mutation.getStatusTestPair().getKillingTests()), killingTests)
-//                + makeNode(Double.toString(details.getSusp()), suspValue)
+                + makeNode(createAllKillingTestDesc(mutation.getStatusTestPair().getKillingTest()), killingTest)
+                + makeNode(Double.toString(getSusp(details)), suspValue)
                 + makeNode(clean(details.getDescription()), description);
+    }
+
+    private double getSusp(final MutationDetails details) {
+        return Commons.calculateSusp(this.suspStrategy, details, this.failingTests, this.allTestsCount);
     }
 
     private String clean(final String value) {
@@ -142,14 +162,14 @@ public class CompressedXMLReportListener implements MutationResultListener {
     }
 
 
-//    private String createAllKillingTestsDesc(final Collection<String> killingTests) {
-//        if (!killingTests.isEmpty()) {
-//            final String s = killingTests.toString();
-//            return clean(s.substring(1, s.length() - 1));
-//        } else {
-//            return null;
-//        }
-//    }
+    private String createAllKillingTestDesc(final Option<String> killingTest) {
+        if (killingTest.hasSome()) {
+            final String s = killingTest.value();
+            return clean(s.substring(1, s.length() - 1));
+        } else {
+            return null;
+        }
+    }
 
     private void write(final String value) {
         try {
