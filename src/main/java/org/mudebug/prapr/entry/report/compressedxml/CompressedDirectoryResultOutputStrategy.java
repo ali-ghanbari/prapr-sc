@@ -20,13 +20,15 @@ package org.mudebug.prapr.entry.report.compressedxml;
  * #L%
  */
 
-import org.apache.commons.io.output.WriterOutputStream;
 import org.pitest.util.ResultOutputStrategy;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.StandardCharsets;
+import java.lang.reflect.Field;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -42,19 +44,40 @@ public class CompressedDirectoryResultOutputStrategy implements ResultOutputStra
 
     @Override
     public Writer createWriterForFile(String sourceFile) {
-        final WriterOutputStream wos = new WriterOutputStream(core.createWriterForFile(sourceFile),
-                StandardCharsets.UTF_8);
-        final BufferedOutputStream bos = new BufferedOutputStream(wos);
+        final Writer coreWriter = core.createWriterForFile(sourceFile);
+        final OutputStream os = exposeOutputStreamUnsafe((BufferedWriter) coreWriter);
+        if (os == null) {
+            throw new IllegalStateException();
+        }
+        final OutputStream bos = new BufferedOutputStream(os);
         try {
-            final GZIPOutputStream gzos = new GZIPOutputStream(bos);
+            final OutputStream gzos = new GZIPOutputStream(bos);
             return new OutputStreamWriter(gzos);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        throw new IllegalStateException();
     }
 
     public static CompressedDirectoryResultOutputStrategy forResultOutputStrategy(final ResultOutputStrategy dros) {
         return new CompressedDirectoryResultOutputStrategy(dros);
+    }
+
+    // there should be a better way to handle this. this is just a temporary workaround solution!
+    private static OutputStream exposeOutputStreamUnsafe(final BufferedWriter writer) {
+        try {
+            final Field fieldOut = BufferedWriter.class.getDeclaredField("out");
+            fieldOut.setAccessible(true);
+            final FileWriter fileWriter = (FileWriter) fieldOut.get(writer);
+            final Field fieldSE = OutputStreamWriter.class.getDeclaredField("se");
+            fieldSE.setAccessible(true);
+            final Object se = fieldSE.get(fileWriter);
+            final Field fieldOS = se.getClass().getDeclaredField("out");
+            fieldOS.setAccessible(true);
+            return (OutputStream) fieldOS.get(se);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
