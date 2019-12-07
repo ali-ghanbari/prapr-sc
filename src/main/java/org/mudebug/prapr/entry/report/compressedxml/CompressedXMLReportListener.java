@@ -23,7 +23,7 @@ package org.mudebug.prapr.entry.report.compressedxml;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.block;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.description;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.index;
-import static org.mudebug.prapr.entry.report.compressedxml.Tag.killingTest;
+import static org.mudebug.prapr.entry.report.compressedxml.Tag.killingTests;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.coveringTests;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.lineNumber;
 import static org.mudebug.prapr.entry.report.compressedxml.Tag.methodDescription;
@@ -60,7 +60,7 @@ enum Tag {
     mutator,
     index,
     coveringTests,
-    killingTest,
+    killingTests,
     description,
     suspValue,
     block;
@@ -121,7 +121,7 @@ public class CompressedXMLReportListener implements MutationResultListener {
                 + makeNode("" + details.getFirstIndex(), index)
                 + makeNode("" + details.getBlock(), block)
                 + makeNode(createCoveringTestsDesc(details.getTestsInOrder()), coveringTests)
-                + makeNode(createAllKillingTestDesc(mutation.getStatusTestPair().getKillingTest()), killingTest)
+                + makeNode(createAllKillingTestDesc(mutation.getStatusTestPair().getKillingTest()), killingTests)
                 + makeNode(Double.toString(getSusp(details)), suspValue)
                 + makeNode(clean(details.getDescription()), description);
     }
