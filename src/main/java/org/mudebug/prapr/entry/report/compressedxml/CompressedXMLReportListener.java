@@ -165,7 +165,7 @@ public class CompressedXMLReportListener implements MutationResultListener {
     private String createAllKillingTestDesc(final Option<String> killingTest) {
         if (killingTest.hasSome()) {
             final String s = killingTest.value();
-            return clean(s.substring(1, s.length() - 1));
+            return clean(s);
         } else {
             return null;
         }
