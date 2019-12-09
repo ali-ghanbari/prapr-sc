@@ -97,6 +97,11 @@ public class PraPRMojo extends AbstractPitMojo {
 
     @Override
     protected Option<CombinedStatistics> analyse() throws MojoExecutionException {
+        final PraPRReportOptions data = preanalyse();
+        return Option.some(this.goalStrategy.execute(detectBaseDir(), data, this.plugins, getEnvironmentVariables()));
+    }
+
+    protected PraPRReportOptions preanalyse() {
         final Log log = getLog();
         log.info(">>>>>>");
         log.info(TextStyleUtil.underlined(TextStyleUtil.bold("PraPR")) + TextStyleUtil.underlined(" (Practical Program Repair via Bytecode Mutation)"));
@@ -137,7 +142,8 @@ public class PraPRMojo extends AbstractPitMojo {
         data.addFailingTests(this.failingTests);
         data.setReorderTestCases(this.reorderTestCases);
         data.setVerboseReport(this.verboseReport);
-        return Option.some(this.goalStrategy.execute(detectBaseDir(), data, this.plugins, getEnvironmentVariables()));
+        data.setFailWhenNoMutations(false);
+        return data;
     }
 
     private void sanitizeTestCaseNames() {

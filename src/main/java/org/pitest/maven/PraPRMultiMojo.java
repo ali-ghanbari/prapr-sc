@@ -92,9 +92,8 @@ public class PraPRMultiMojo extends PraPRMojo
 	@Override
 	protected Option<CombinedStatistics> analyse()
 			throws MojoExecutionException {
-		System.out.print("Modules: "+ModuleUtils.modules);
-		final ReportOptions data = new MojoToReportOptionsConverter(this,
-				new SurefireConfigConverter(), this.filter).convert();
+		// Get normal PraPR configs
+		final ReportOptions data=preanalyse();
 		// Modify the PraPR config before executing
 		modifyPraPRReportOptions(data);
 		// Actual entry point is right here for executing PraPR
