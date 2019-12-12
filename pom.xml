@@ -140,14 +140,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.pitest:*</include>
-                                    <include>commons-io:*</include>
-                                    <include>commons-lang:*</include>
-                                    <include>commons-codec:*</include>
-                                </includes>
-                            </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.pitest.reloc.asm</pattern>
