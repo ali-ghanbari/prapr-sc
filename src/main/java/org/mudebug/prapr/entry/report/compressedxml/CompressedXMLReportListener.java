@@ -139,7 +139,8 @@ public class CompressedXMLReportListener implements MutationResultListener {
         if (value != null) {
             return "<" + tag + " " + attributes + ">" + value + "</" + tag + ">";
         } else {
-            return "<" + tag + attributes + "/>";
+//             return "<" + tag + attributes + "/>";
+            return "<" + tag + ">" + "<" + tag + "/>";
         }
 
     }
@@ -148,7 +149,7 @@ public class CompressedXMLReportListener implements MutationResultListener {
         if (value != null) {
             return "<" + tag + ">" + value + "</" + tag + ">";
         } else {
-            return "<" + tag + "/>";
+            return "<" + tag + ">" + "<" + tag + "/>";
         }
     }
 
